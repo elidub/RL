@@ -1,0 +1,21 @@
+All Exercises and Equations come from RL:AI
+Solution of Exercises are in [1]
+
+1) Solution from Ex. 3.18
+
+2) Similar to Eqn. (4.2). But how does that compare against the solution from Ex. 3.17. Shouldn't that be the same in someway? Or are they the same?
+
+3) Part of the loop written below:
+
+Loop for each s in S:
+  Loop for each a in A:
+    q <- Q^\pi(s,a)
+    Q^\pi(s,a) <- ...
+
+I would say implement Eqn. (4.2) on the '...'. But that does not correspond to solution from Ex. 3.17. And I would also expect that we are supposed to use our answer from 1).
+
+4) Similar issue as 3)
+
+
+
+[1] https://github.com/vojtamolda/reinforcement-learning-an-introduction/blob/main/chapter03/chapter03.pdf
