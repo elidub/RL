@@ -22,88 +22,6 @@ class SimpleBlackjackPolicy(object):
             Numpy array filled with probabilities (same length as states and actions)
         """
         # YOUR CODE HERE
-        raise NotImplementedError
-        return np.array(probs)
-    
-    def sample_action(self, state):
-        """
-        This method takes a state as input and returns an action sampled from this policy.  
-
-        Args:
-            state: current state
-
-        Returns:
-            An action (int).
-        """
-        # YOUR CODE HERE
-        raise NotImplementedError
-        return action
-
-class SimpleBlackjackPolicy(object):
-    """
-    A simple BlackJack policy that sticks with 20 or 21 points and hits otherwise.
-    """
-    def get_probs(self, states, actions):
-        """
-        This method takes a list of states and a list of actions and returns a numpy array that contains a probability
-        of perfoming action in given state for every corresponding state action pair. 
-
-        Args:
-            states: a list of states.
-            actions: a list of actions.
-
-        Returns:
-            Numpy array filled with probabilities (same length as states and actions)
-        """
-        # YOUR CODE HERE
-        
-        probs = [None] * len(actions)
-
-        for i, (state, action) in enumerate(zip(states, actions)):
-            
-            sampled_action = sample_action(state)
-            
-            probs[i] = (sampled_action == action)*1.
-            
-        return np.array(probs)
-    
-    def sample_action(self, state):
-        """
-        This method takes a state as input and returns an action sampled from this policy.  
-
-        Args:
-            state: current state
-
-        Returns:
-            An action (int).
-        """
-        # YOUR CODE HERE
-        
-        stick, hit = 0, 1
-        player, dealer, usable_ace = state
-
-        if not usable_ace: player =- 10 
-        action = hit if player < 20 else stick
-            
-        return action
-
-class SimpleBlackjackPolicy(object):
-    """
-    A simple BlackJack policy that sticks with 20 or 21 points and hits otherwise.
-    """
-    def get_probs(self, states, actions):
-        """
-        This method takes a list of states and a list of actions and returns a numpy array that contains a probability
-        of perfoming action in given state for every corresponding state action pair. 
-
-        Args:
-            states: a list of states.
-            actions: a list of actions.
-
-        Returns:
-            Numpy array filled with probabilities (same length as states and actions)
-        """
-        # YOUR CODE HERE
         
         probs = [None] * len(actions)
 
@@ -135,50 +53,629 @@ class SimpleBlackjackPolicy(object):
             
         return action
 
-class SimpleBlackjackPolicy(object):
+def sample_episode(env, policy):
     """
-    A simple BlackJack policy that sticks with 20 or 21 points and hits otherwise.
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
     """
-    def get_probs(self, states, actions):
-        """
-        This method takes a list of states and a list of actions and returns a numpy array that contains a probability
-        of perfoming action in given state for every corresponding state action pair. 
-
-        Args:
-            states: a list of states.
-            actions: a list of actions.
-
-        Returns:
-            Numpy array filled with probabilities (same length as states and actions)
-        """
-        # YOUR CODE HERE
-        
-        probs = [None] * len(actions)
-
-        for i, (state, action) in enumerate(zip(states, actions)):
-            
-            sampled_action = self.sample_action(state)
-            
-            probs[i] = (sampled_action == action)*1.
-            
-        return np.array(probs)
+    states = []
+    actions = []
+    rewards = []
+    dones = []
     
-    def sample_action(self, state):
-        """
-        This method takes a state as input and returns an action sampled from this policy.  
-
-        Args:
-            state: current state
-
-        Returns:
-            An action (int).
-        """
-        # YOUR CODE HERE
+    # YOUR CODE HERE
+    s = env.reset()
+    
+    done = False:
+    
+    while not done:
+        sampled_action = policy.sample_action(s)
+        state, reward, done, info = env.step(sampled_action)
         
-        stick, hit = 0, 1
-        player, dealer, usable_ace = state
+        
+    
+    
+    
+    return states, actions, rewards, dones
 
-        if not usable_ace: player =- 10 
-        action = hit if player < 20 else stick
-            
-        return action
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    
+    done = False
+    
+    while not done:
+        sampled_action = policy.sample_action(s)
+        state, reward, done, info = env.step(sampled_action)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(sampled_action)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    print(s)
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    print(s)
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        print(action)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    print(s)
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        print(state)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    print(s)
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    print(s)
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        state, reward, done, info = env.step(action)
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    s = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(s)
+        print(s, action)
+        state, reward, done, info = env.step(action)
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        print(s, action)
+        state, reward, done, info = env.step(action)
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        print(s, action)
+        state, reward, done, info = env.step(action)
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        new_state, reward, done, info = env.step(action)
+        
+        states.append(state)
+        actions.append(action)
+        rewards.append(reward)
+        dones.append(done)
+        
+        state = new_state
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        new_state, reward, done, info = env.step(action)
+        
+        states.append(state)
+        actions.append(action)
+        rewards.append(reward)
+        dones.append(done)
+        
+        state = new_state
+        print(state, reward, done, info)
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    
+    
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        new_state, reward, done, info = env.step(action)
+        
+        states.append(state)
+        actions.append(action)
+        rewards.append(reward)
+        dones.append(done)
+        
+        state = new_state
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
+
+# Let's sample some episodes
+env = BlackjackEnv()
+policy = SimpleBlackjackPolicy()
+for episode in range(3):
+    trajectory_data = sample_episode(env, policy)
+    print("Episode {}:\nStates {}\nActions {}\nRewards {}\nDones {}\n".format(episode,*trajectory_data))
+
+def sample_episode(env, policy):
+    """
+    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
+    and dones from environment's step function and policy's sample_action function as lists.
+
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+
+    Returns:
+        Tuple of lists (states, actions, rewards, dones). All lists should have same length. 
+        Hint: Do not include the state after the termination in the list of states.
+    """
+    states = []
+    actions = []
+    rewards = []
+    dones = []
+    
+    # YOUR CODE HERE
+    state = env.reset()
+    done = False
+    
+    while not done:
+        action = policy.sample_action(state)
+        new_state, reward, done, info = env.step(action)
+        
+        states.append(state)
+        actions.append(action)
+        rewards.append(reward)
+        dones.append(done)
+        
+        state = new_state
+        
+        
+    
+    
+    
+    return states, actions, rewards, dones
