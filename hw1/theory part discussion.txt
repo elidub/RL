@@ -4,6 +4,9 @@ Solution of Exercises are in [1]
 1) Solution from Ex. 3.18
 
 2) Similar to Eqn. (4.2). But how does that compare against the solution from Ex. 3.17. Shouldn't that be the same in someway? Or are they the same?
+-> 
+
+
 
 3) Part of the loop written below:
 
