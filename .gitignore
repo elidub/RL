@@ -1,3 +1,4 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 */dp_autograde.py
+*/mc_autograde.py

@@ -214,3 +214,149 @@ def mc_importance_sampling(env, behavior_policy, target_policy, num_episodes, di
                 break
     
     return V
+
+def mc_prediction(env, policy, num_episodes, discount_factor=1.0, sampling_function=sample_episode):
+    """
+    Monte Carlo prediction algorithm. Calculates the value function
+    for a given policy using sampling.
+    
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+        num_episodes: Number of episodes to sample.
+        discount_factor: Gamma discount factor.
+        sampling_function: Function that generates data from one episode.
+    
+    Returns:
+        A dictionary that maps from state -> value.
+        The state is a tuple and the value is a float.
+    """
+
+    # Keeps track of current V and count of returns for each state
+    # to calculate an update.
+    V = defaultdict(float)
+    returns_count = defaultdict(float)
+    
+    # YOUR CODE HERE
+    for _ in tqdm(range(num_episodes)):
+        states, actions, rewards, dones = episode = sample_episode(env, policy)
+        G = 0.
+#         for state, action, reward, done in zip(*episode):
+        reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
+        for t, (state, action, reward, done) in enumerate(reversed_episodes):
+            G = discount_factor * G + reward
+            if state not in states[:t]:
+#                 print(returns_count, returns_count[state])
+                returns_count[state] += 1
+                V[state] = (returns_count[state] * V[state] + G) / (returns_count[state] + 1)
+    
+    return V
+
+def mc_prediction(env, policy, num_episodes, discount_factor=1.0, sampling_function=sample_episode):
+    """
+    Monte Carlo prediction algorithm. Calculates the value function
+    for a given policy using sampling.
+    
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+        num_episodes: Number of episodes to sample.
+        discount_factor: Gamma discount factor.
+        sampling_function: Function that generates data from one episode.
+    
+    Returns:
+        A dictionary that maps from state -> value.
+        The state is a tuple and the value is a float.
+    """
+
+    # Keeps track of current V and count of returns for each state
+    # to calculate an update.
+    V = defaultdict(float)
+    returns_count = defaultdict(float)
+    
+    # YOUR CODE HERE
+    for _ in tqdm(range(num_episodes)):
+        states, actions, rewards, dones = episode = sample_episode(env, policy)
+        G = 0.
+        reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
+        
+        for t, (state, action, reward, done) in enumerate(reversed_episodes):
+            G = discount_factor * G + reward
+            if state not in states[:t]:
+#                 print(returns_count, returns_count[state])
+                returns_count[state] += 1
+                V[state] = (returns_count[state] * V[state] + G) / (returns_count[state] + 1)
+    
+    return V
+
+def mc_prediction(env, policy, num_episodes, discount_factor=1.0, sampling_function=sample_episode):
+    """
+    Monte Carlo prediction algorithm. Calculates the value function
+    for a given policy using sampling.
+    
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+        num_episodes: Number of episodes to sample.
+        discount_factor: Gamma discount factor.
+        sampling_function: Function that generates data from one episode.
+    
+    Returns:
+        A dictionary that maps from state -> value.
+        The state is a tuple and the value is a float.
+    """
+
+    # Keeps track of current V and count of returns for each state
+    # to calculate an update.
+    V = defaultdict(float)
+    returns_count = defaultdict(float)
+    
+    # YOUR CODE HERE
+    for _ in tqdm(range(num_episodes)):
+        states, actions, rewards, dones = episode = sample_episode(env, policy)
+        G = 0.
+        reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
+        
+        for t, (state, action, reward, done) in enumerate(reversed_episodes):
+            G = discount_factor * G + reward
+            if state not in states[:t]:
+                returns_count[state] += 1
+                V[state] = (returns_count[state] * V[state] + G) / (returns_count[state] + 1)
+    
+    return V
+
+def mc_prediction(env, policy, num_episodes, discount_factor=1.0, sampling_function=sample_episode):
+    """
+    Monte Carlo prediction algorithm. Calculates the value function
+    for a given policy using sampling.
+    
+    Args:
+        env: OpenAI gym environment.
+        policy: A policy which allows us to sample actions with its sample_action method.
+        num_episodes: Number of episodes to sample.
+        discount_factor: Gamma discount factor.
+        sampling_function: Function that generates data from one episode.
+    
+    Returns:
+        A dictionary that maps from state -> value.
+        The state is a tuple and the value is a float.
+    """
+
+    # Keeps track of current V and count of returns for each state
+    # to calculate an update.
+    V = defaultdict(float)
+    returns_count = defaultdict(float)
+    
+    # YOUR CODE HERE
+    for _ in tqdm(range(num_episodes)):
+        states, actions, rewards, dones = episode = sample_episode(env, policy)
+        G = 0.
+        reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
+        
+        for t, (state, action, reward, done) in enumerate(reversed_episodes):
+            G = discount_factor * G + reward
+            if state not in states[:t]:
+                returns_count[state] += 1
+                V[state] = (returns_count[state] * V[state] + G) / (returns_count[state] + 1)
+    
+    return V
