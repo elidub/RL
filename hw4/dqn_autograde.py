@@ -121,11 +121,41 @@ def compute_targets(Q, rewards, next_states, dones, discount_factor):
     """
     # YOUR CODE HERE
     targets = rewards + discount_factor * torch.max(Q.forward(next_states))
+#     print(targets.shape)
+#     print("targets shape: ", targets.shape)
+#     print("rewards shape: ", rewards.shape)
+#     print("next_states shape: ", next_states.shape)
+#     print("dones shape: ", dones.shape)
     
-    targets = torch.tensor([
-        target if not done else next_state 
-        for done, target, next_state in zip(dones, targets, next_states)
-    ]).unsqueeze(1)
+    
+    tmp = []
+    for done, target, next_state, reward in zip(dones, targets, next_states, rewards):
+        if not done:
+            tmp.append(target)
+        else:
+            tmp.append(torch.tensor(reward))
+#             tmp.append(torch.tensor([0.0]))
+#             tmp.append(next_state)
+            
+    targets = torch.cat(tmp)
+    targets = targets[:, None]
+    
+#     targets = torch.tensor([target  
+#         for done, target in zip(dones, targets)
+#     ]).unsqueeze(1)
+    
+    
+#     targets = torch.tensor([
+#         target if not done else next_state 
+#         for done, target, next_state in zip(dones, targets, next_states)
+#     ]).unsqueeze(1)
+
+#     targets = [
+#         target if not done else next_state 
+#         for done, target, next_state in zip(dones, targets, next_states)
+#     ]
+    
+#     print("final targets shape: ", targets.shape)
     
     return targets
     
@@ -207,5 +237,6 @@ def run_episodes(train, Q, policy, memory, env, num_episodes, batch_size, discou
                           .format(i, steps, '\033[92m' if steps >= 195 else '\033[99m'))
                 episode_durations.append(steps)
                 #plot_durations()
+                print("loss: ", loss)
                 break
     return episode_durations
