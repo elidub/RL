@@ -34,7 +34,7 @@ class ReplayMemory:
     def push(self, transition):
         # YOUR CODE HERE
         self.memory.append(transition)
-        if len(self.memory) > capacity: self.memory = self.memory[-self.capacity:]
+        if len(self.memory) > self.capacity: self.memory = self.memory[-self.capacity:]
         
     def sample(self, batch_size):
         # YOUR CODE HERE
@@ -71,20 +71,22 @@ class EpsilonGreedyPolicy(object):
         Returns:
             An action (int).
         """
-        
+        # YOUR CODE HERE
         obs = torch.from_numpy(np.array(obs.astype(np.float32)))
         
         with torch.no_grad():
             q = self.Q.forward(obs)
         
-        
         greediest_action = np.argmax(q).item()
         weights = [(1-self.epsilon)*100.0] + [self.epsilon*100.0/2]*2
         
         action = random.choices([greediest_action, 0, 1], weights=weights, k = 1)
+        
+        # Take only element as integer in stead of list
         assert len(action) == 1
-            
-        return action[0] # Take only element as integer in stead of list
+        action = action[0] 
+        
+        return action
         
     def set_epsilon(self, epsilon):
         self.epsilon = epsilon
@@ -120,13 +122,7 @@ def compute_targets(Q, rewards, next_states, dones, discount_factor):
         A torch tensor filled with target values. Shape: batch_size x 1.
     """
     # YOUR CODE HERE
-    targets = rewards + discount_factor * torch.max(Q.forward(next_states))
-#     print(targets.shape)
-#     print("targets shape: ", targets.shape)
-#     print("rewards shape: ", rewards.shape)
-#     print("next_states shape: ", next_states.shape)
-#     print("dones shape: ", dones.shape)
-    
+    targets = rewards + discount_factor * torch.max(Q.forward(next_states), keepdim = True, dim = 1).values
     
     tmp = []
     for done, target, next_state, reward in zip(dones, targets, next_states, rewards):
@@ -134,39 +130,18 @@ def compute_targets(Q, rewards, next_states, dones, discount_factor):
             tmp.append(target)
         else:
             tmp.append(torch.tensor(reward))
-#             tmp.append(torch.tensor([0.0]))
-#             tmp.append(next_state)
-            
+    
     targets = torch.cat(tmp)
-    targets = targets[:, None]
-    
-#     targets = torch.tensor([target  
-#         for done, target in zip(dones, targets)
-#     ]).unsqueeze(1)
-    
-    
-#     targets = torch.tensor([
-#         target if not done else next_state 
-#         for done, target, next_state in zip(dones, targets, next_states)
-#     ]).unsqueeze(1)
-
-#     targets = [
-#         target if not done else next_state 
-#         for done, target, next_state in zip(dones, targets, next_states)
-#     ]
-    
-#     print("final targets shape: ", targets.shape)
+    targets = targets[:, None]    
     
     return targets
     
-    
-    
+
 def train(Q, memory, optimizer, batch_size, discount_factor):
     # DO NOT MODIFY THIS FUNCTION
     
     # don't learn without some decent experience
     if len(memory) < batch_size:
-        print('this is not good:', len(memory), batch_size) # REMOVE THIS LINE
         return None
 
     # random transition batch is taken from experience replay memory
@@ -209,13 +184,7 @@ def run_episodes(train, Q, policy, memory, env, num_episodes, batch_size, discou
         steps = 0
         while True:
             # YOUR CODE HERE
-
-            # We need a larger memory, fill with dummy data
-#             transition = memory.sample(1)[0]
-#             memory = ReplayMemory(10 * batch_size)
-#             for i in range(batch_size):
-#                 memory.push(transition)  
-
+            
             # Sample a transition
             action = policy.sample_action(state)
             s_next, r, done, _ = env.step(action)
@@ -225,11 +194,13 @@ def run_episodes(train, Q, policy, memory, env, num_episodes, batch_size, discou
             
             loss = train(Q, memory, optimizer, batch_size, discount_factor)
             
+            # Update epsilon and timesteps
+            policy.set_epsilon(get_epsilon(global_steps))
+            global_steps += 1
+            steps += 1
             
-            policy.set_epsilon(get_epsilon(i))
-            
-            state = s_next
-
+            # Update state
+            state = np.copy(s_next)
             
             if done:
                 if i % 10 == 0:
@@ -237,6 +208,5 @@ def run_episodes(train, Q, policy, memory, env, num_episodes, batch_size, discou
                           .format(i, steps, '\033[92m' if steps >= 195 else '\033[99m'))
                 episode_durations.append(steps)
                 #plot_durations()
-                print("loss: ", loss)
                 break
     return episode_durations
