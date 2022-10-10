@@ -114,15 +114,17 @@ def mc_prediction(env, policy, num_episodes, discount_factor=1.0, sampling_funct
     
     # YOUR CODE HERE
     for _ in tqdm(range(num_episodes)):
-        states, actions, rewards, dones = episode = sample_episode(env, policy)
+        states, actions, rewards, dones = episode = sampling_function(env, policy)
         G = 0.
         reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
         
         for t, (state, action, reward, done) in enumerate(reversed_episodes):
+            t = len(states) - t - 1
             G = discount_factor * G + reward
             if state not in states[:t]:
-                returns_count[state] += 1
+#                 returns_count[state] += 1
                 V[state] = (returns_count[state] * V[state] + G) / (returns_count[state] + 1)
+                returns_count[state] += 1
     
     return V
 
@@ -199,7 +201,7 @@ def mc_importance_sampling(env, behavior_policy, target_policy, num_episodes, di
     
     ## Following the algorithm at p. 110, but implementing the derived update rule to use ordinary importance sampling
     for _ in tqdm(range(num_episodes)):
-        states, actions, rewards, dones = episode = sample_episode(env, behavior_policy)
+        states, actions, rewards, dones = episode = sampling_function(env, behavior_policy)
         G = 0.
         W = 1.
         reversed_episodes = zip(reversed(states), reversed(actions), reversed(rewards), reversed(dones))
@@ -211,7 +213,7 @@ def mc_importance_sampling(env, behavior_policy, target_policy, num_episodes, di
             W = W * pi / b # Already calculate W_{n+1}
             V[state] = V[state] + 1 / (returns_count[state] + 1) * (W * G - V[state]) # Derived update rule from Ex. 3.5.1
 
-            if W == 0:
-                break
+#             if W == 0:
+#                 break
     
     return V
