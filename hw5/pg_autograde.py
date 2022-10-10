@@ -106,7 +106,6 @@ def sample_episode(env, policy):
     while not done:
         action = policy.sample_action(torch.from_numpy(state))
         new_state, reward, done, info = env.step(action)
-        
         states.append(torch.as_tensor(state))
         actions.append(torch.as_tensor(action))
         rewards.append(torch.as_tensor(reward))
@@ -120,94 +119,7 @@ def sample_episode(env, policy):
     rewards = torch.stack(rewards).unsqueeze(1)
     dones = torch.stack(dones).unsqueeze(1)
     
-    print(states.shape, actions.shape, rewards.shape, dones.shape)
-    
-    return states, actions, rewards, dones
-
-def sample_episode(env, policy):
-    """
-    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
-    and dones from environment's step function as tensors.
-
-    Args:
-        env: OpenAI gym environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
-
-    Returns:
-        Tuple of tensors (states, actions, rewards, dones). All tensors should have same first dimension and 
-        should have dim=2. This means that vectors of length N (states, rewards, actions) should be Nx1.
-        Hint: Do not include the state after termination in states.
-    """
-    states = []
-    actions = []
-    rewards = []
-    dones = []
-    
-    # YOUR CODE HERE
-    state = env.reset()
-    done = False
-    
-    while not done:
-        action = policy.sample_action(torch.from_numpy(state))
-        new_state, reward, done, info = env.step(action)
-        print(reward)
-        states.append(torch.as_tensor(state))
-        actions.append(torch.as_tensor(action))
-        rewards.append(torch.as_tensor(reward))
-        dones.append(torch.as_tensor(done))
-        
-        state = new_state
-    
-    
-    states = torch.stack(states)
-    actions = torch.stack(actions).unsqueeze(1)
-    rewards = torch.stack(rewards).unsqueeze(1)
-    dones = torch.stack(dones).unsqueeze(1)
-    
-    print(states.shape, actions.shape, rewards.shape, dones.shape)
-    
-    return states, actions, rewards, dones
-
-def sample_episode(env, policy):
-    """
-    A sampling routine. Given environment and a policy samples one episode and returns states, actions, rewards
-    and dones from environment's step function as tensors.
-
-    Args:
-        env: OpenAI gym environment.
-        policy: A policy which allows us to sample actions with its sample_action method.
-
-    Returns:
-        Tuple of tensors (states, actions, rewards, dones). All tensors should have same first dimension and 
-        should have dim=2. This means that vectors of length N (states, rewards, actions) should be Nx1.
-        Hint: Do not include the state after termination in states.
-    """
-    states = []
-    actions = []
-    rewards = []
-    dones = []
-    
-    # YOUR CODE HERE
-    state = env.reset()
-    done = False
-    
-    while not done:
-        action = policy.sample_action(torch.from_numpy(state))
-        new_state, reward, done, info = env.step(action)
-        states.append(torch.as_tensor(state))
-        actions.append(torch.as_tensor(action))
-        rewards.append(torch.as_tensor(reward))
-        dones.append(torch.as_tensor(done))
-        
-        state = new_state
-    
-    
-    states = torch.stack(states)
-    actions = torch.stack(actions).unsqueeze(1)
-    rewards = torch.stack(rewards).unsqueeze(1)
-    dones = torch.stack(dones).unsqueeze(1)
-    
-    print(states.shape, actions.shape, rewards.shape, dones.shape)
+#     print(states.shape, actions.shape, rewards.shape, dones.shape)
     
     return states, actions, rewards, dones
 
@@ -228,11 +140,13 @@ def compute_reinforce_loss(policy, episode, discount_factor):
     
     # YOUR CODE HERE
     states, actions, rewards, dones = trajectory_data = episode
-    action_probs = policy.get_probs(states, actions)
     
-    states, actions, rewards, dones = trajectory_data
-    action_probs = policy.get_probs(states, actions)
-    loss = - torch.sum(torch.log(action_probs) * rewards, dim = 1)
+    action_probs = policy.get_probs(states, actions).squeeze(1)
+    returns = torch.cat([discount_factor**t * reward for t, reward in enumerate(rewards)])
+    
+
+    loss = - torch.sum(torch.log(action_probs) * returns)
+    loss = torch.tensor(loss, requires_grad = True)
     
     return loss
 
@@ -247,11 +161,19 @@ def run_episodes_policy_gradient(policy, env, num_episodes, discount_factor, lea
     for i in range(num_episodes):
         
         # YOUR CODE HERE
-        raise NotImplementedError
+        episode = sample_episode(env, policy)
+        loss = compute_reinforce_loss(policy, episode, discount_factor)
+        
+        # backpropagation of loss to Neural Network (PyTorch magic)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        
                            
         if i % 10 == 0:
             print("{2} Episode {0} finished after {1} steps"
                   .format(i, len(episode[0]), '\033[92m' if len(episode[0]) >= 195 else '\033[99m'))
         episode_durations.append(len(episode[0]))
+        episode_durations.append(loss.detach().numpy())
         
     return episode_durations
