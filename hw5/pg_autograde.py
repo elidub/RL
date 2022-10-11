@@ -48,16 +48,9 @@ class NNPolicy(nn.Module):
         """
         # YOUR CODE HERE
         probs = self.forward(obs)
-        actions = actions.squeeze(1)
         
-#         print('actions', actions, actions.shape)
-#         print('probs', probs, probs.shape)
+        action_probs = torch.gather(probs, dim = 1, index = actions)
 
-        # Selects the probability from the action
-        # Should be rewritten with indexing instead of for loop
-        action_probs = torch.tensor([prob[action] for prob, action in zip(probs, actions)])
-        action_probs = action_probs.unsqueeze(1)
-        
         return action_probs
     
     def sample_action(self, obs):
@@ -119,8 +112,6 @@ def sample_episode(env, policy):
     rewards = torch.stack(rewards).unsqueeze(1)
     dones = torch.stack(dones).unsqueeze(1)
     
-#     print(states.shape, actions.shape, rewards.shape, dones.shape)
-    
     return states, actions, rewards, dones
 
 def compute_reinforce_loss(policy, episode, discount_factor):
@@ -141,13 +132,17 @@ def compute_reinforce_loss(policy, episode, discount_factor):
     # YOUR CODE HERE
     states, actions, rewards, dones = trajectory_data = episode
     
+    # convert to PyTorch and define types
+    actions = torch.tensor(actions, dtype=torch.int64)#[:, None]  # Need 64 bit to use them as index
     action_probs = policy.get_probs(states, actions).squeeze(1)
-    returns = torch.cat([discount_factor**t * reward for t, reward in enumerate(rewards)])
     
-
+    returns = [rewards[-1]]
+    for i, reward in enumerate(rewards[0:-1].flip(dims=(0,))):
+        returns.append(reward + discount_factor*returns[i])
+    returns = torch.tensor(returns[::-1])
+    
     loss = - torch.sum(torch.log(action_probs) * returns)
-    loss = torch.tensor(loss, requires_grad = True)
-    
+
     return loss
 
 # YOUR CODE HERE
@@ -161,7 +156,7 @@ def run_episodes_policy_gradient(policy, env, num_episodes, discount_factor, lea
     for i in range(num_episodes):
         
         # YOUR CODE HERE
-        episode = sample_episode(env, policy)
+        episode = sampling_function(env, policy)
         loss = compute_reinforce_loss(policy, episode, discount_factor)
         
         # backpropagation of loss to Neural Network (PyTorch magic)
@@ -172,8 +167,8 @@ def run_episodes_policy_gradient(policy, env, num_episodes, discount_factor, lea
                            
         if i % 10 == 0:
             print("{2} Episode {0} finished after {1} steps"
-                  .format(i, len(episode[0]), '\033[92m' if len(episode[0]) >= 195 else '\033[99m'))
+                  .format(i, len(episode[0]), '\033[92m' if len(episode[0]) >= 195 else '\033[99m'),
+                 f'loss: {loss.detach().numpy()}')
         episode_durations.append(len(episode[0]))
-        episode_durations.append(loss.detach().numpy())
         
     return episode_durations
