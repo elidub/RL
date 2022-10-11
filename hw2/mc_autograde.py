@@ -215,5 +215,7 @@ def mc_importance_sampling(env, behavior_policy, target_policy, num_episodes, di
 
 #             if W == 0:
 #                 break
+
+            returns_count[state] += 1
     
     return V
